@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import { useEffect } from "react";
 import { applyFilters } from "./store/records.state";
-import SortHeader from "./components/Filter/SortHeader";
+import SortHeader from "./components/Filter/components/SortHeader/SortHeader";
+import { Product } from "./interfaces/product";
 
 export default function Layout() {
   const { products, selectedFilters, view } = useSelector(
@@ -31,7 +32,7 @@ export default function Layout() {
           )}
           {view === "grid" ? (
             <Grid>
-              {products.map((product: any) => (
+              {products.map((product: Product) => (
                 <Grid.Col span={4} key={product?.id}>
                   <ProductCard product={product} />
                 </Grid.Col>
@@ -39,7 +40,7 @@ export default function Layout() {
             </Grid>
           ) : (
             <Grid>
-              {products.map((product: any) => (
+              {products.map((product: Product) => (
                 <Grid.Col span={12} key={product?.id}>
                   <ProductCard product={product} />
                 </Grid.Col>

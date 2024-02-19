@@ -11,27 +11,25 @@ import {
 } from "@mantine/core";
 import { IconLayoutList, IconLayoutGrid } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearFilters, setFilters, setView } from "../../store/records.state";
-import { useState } from "react";
+import {
+  clearFilters,
+  setFilters,
+  setView,
+} from "../../../../store/records.state";
+import { RootState } from "../../../../store/store";
 
 export default function SortHeader() {
   const { view, enableClearFilter, selectedFilters, products } = useSelector(
-    (state: any) => state.records
+    (state: RootState) => state.records
   );
-  const [searchText, setSearchText] = useState("");
+
   const dispatch = useDispatch();
 
   const handleView = (e: string) => {
     view !== e && dispatch(setView(e));
   };
 
-  const handleSearchInput = (e: any) => {
-    setSearchText(e.target.value);
-    dispatch(setFilters({ searchText: e.target.value }));
-  };
-
   const handleClearFilters = () => {
-    setSearchText("");
     dispatch(clearFilters());
   };
 
@@ -49,11 +47,6 @@ export default function SortHeader() {
         </Group>
 
         <Flex gap={"lg"}>
-          <TextInput
-            placeholder="Searchbox"
-            value={searchText}
-            onChange={handleSearchInput}
-          />
           <Group>
             <Text>Sort By:</Text>
             <Select

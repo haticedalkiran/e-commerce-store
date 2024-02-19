@@ -1,9 +1,37 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { mockData } from "../mock/mockData";
+import { Product } from "../interfaces/product";
+import { RadioItem } from "../interfaces/radioItem";
 
-const initialState: any = {
-  products: mockData as any,
+interface RecordsState {
+  products: Product[];
+  categoryList: {
+    name: string;
+    id: string;
+  }[];
+  brandList: {
+    name: string;
+    id: string;
+  }[];
+  priceRanges: RadioItem[];
+  rating: RadioItem[];
+  sort: string;
+  searchText: string;
 
+  selectedFilters: {
+    category: string[];
+    brand: string[];
+    price: string;
+    rating: string;
+    sort: string;
+    searchText: string;
+  };
+  enableClearFilter: boolean;
+  view: string;
+}
+
+const initialState: RecordsState = {
+  products: mockData as Product[],
   categoryList: mockData
     .map((product: any) => {
       return {
@@ -11,14 +39,14 @@ const initialState: any = {
         id: product.categoryId.toString(),
       };
     })
-    .filter((category: any, index: any, self: any) => {
+    .filter((category: any, index: number, self: any) => {
       return (
         index ===
         self.findIndex((t: any) => {
           return t.id === category.id;
         })
       );
-    }) //aphabetik sıralama
+    })
     .sort((a: any, b: any) => {
       return a.name.localeCompare(b.name);
     }),
@@ -27,7 +55,7 @@ const initialState: any = {
     .map((product: any) => {
       return { name: product.brand.name, id: product.brand.id.toString() };
     })
-    .filter((brand: any, index: any, self: any) => {
+    .filter((brand: any, index: number, self: any) => {
       return (
         index ===
         self.findIndex((t: any) => {
@@ -54,6 +82,8 @@ const initialState: any = {
     { id: "5", name: "4.5 star and above", min: 4.5 },
   ],
   sort: "default",
+  searchText: "",
+
   selectedFilters: {
     category: [],
     brand: [],
@@ -63,7 +93,6 @@ const initialState: any = {
     searchText: "",
   },
   enableClearFilter: false,
-
   view: "grid",
 };
 
@@ -87,7 +116,6 @@ export const RecordsState = createSlice({
         initialState.rating.filter((rate: any) => {
           if (rate.id === rating) {
             //TODO: burada< rating/> yuvarlama yapıyor. filtre doğru ama uida yanlış anlaşılablir
-            console.log("rate", rate);
             temp = temp.filter((product: any) => {
               return product.ratingScore?.averageRating >= rate.min;
             });
@@ -115,13 +143,13 @@ export const RecordsState = createSlice({
       }
       if (brand.length > 0) {
         temp = temp.filter((product: any) => {
-          return brand.includes(product.brand.id.toString());
+          return brand.includes((product as any).brand.id.toString());
         });
       }
       if (category.length > 0) {
         temp = temp.filter((product: any) => {
           return state.selectedFilters.category.includes(
-            product.categoryId.toString()
+            (product as any).categoryId.toString()
           );
         });
       }

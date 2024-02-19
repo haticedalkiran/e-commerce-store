@@ -1,61 +1,49 @@
-import {
-  Accordion,
-  AccordionControl,
-  Checkbox,
-  Radio,
-  Text,
-} from "@mantine/core";
-import { useDispatch } from "react-redux";
-import { setFilters } from "../../../../store/records.state";
+import { Accordion, ScrollArea, Checkbox, Radio } from "@mantine/core";
+import { IdNamePair } from "../../../../interfaces/idNamePair";
 
 interface FilterAccordionProps {
-  title?: string;
-  filterlist?: { id: string; name: string }[];
-  expanded?: boolean;
-  isCheckbox?: boolean;
-  onChange?: (
-    panel: string
-  ) => (event: React.SyntheticEvent, isExpanded: boolean) => void;
+  title: string;
+  items: IdNamePair[];
+  selectedValues: string | string[];
+  onChangeCheckbox?: (value: string[]) => void;
+  onChangeRadio?: (value: string) => void;
+  type: "checkbox" | "radio";
 }
 
 export default function FilterAccordion({
-  title = "Category",
-  expanded,
-  isCheckbox = true,
-  onChange,
-  filterlist = [
-    { id: "1", name: "Filter 1" },
-    { id: "2", name: "Filter 2" },
-  ],
+  title,
+  items,
+  selectedValues,
+  onChangeCheckbox,
+  onChangeRadio,
+  type,
 }: FilterAccordionProps) {
-  const dispatch = useDispatch();
-
-  const filterChangeHandler = (value: any) => {
-    dispatch(setFilters({ [title]: value }));
-  };
-
   return (
-    <Accordion multiple bg={"white"} radius="md" px={"md"}>
-      <Accordion.Item value="2">
-        <AccordionControl>{title}</AccordionControl>
-        <Accordion.Panel>
-          {isCheckbox ? (
-            <>
-              <Checkbox.Group onChange={filterChangeHandler}>
-                {filterlist.map((item, index) => (
-                  <Checkbox value={item.id} key={index} label={item.name} />
-                ))}
-              </Checkbox.Group>
-            </>
+    <Accordion.Item value={title}>
+      <Accordion.Control>{title}</Accordion.Control>
+      <Accordion.Panel>
+        <ScrollArea h={200}>
+          {type === "checkbox" ? (
+            <Checkbox.Group
+              value={Array.isArray(selectedValues) ? selectedValues : []}
+              onChange={onChangeCheckbox}
+            >
+              {items.map((item, index) => (
+                <Checkbox key={index} label={item.name} value={item.id} />
+              ))}
+            </Checkbox.Group>
           ) : (
-            <Radio.Group onChange={filterChangeHandler}>
-              {filterlist.map((item, index) => (
-                <Radio value={item.id} key={index} label={item.name} />
+            <Radio.Group
+              value={typeof selectedValues === "string" ? selectedValues : ""}
+              onChange={(e) => onChangeRadio && onChangeRadio(e)}
+            >
+              {items.map((item, index) => (
+                <Radio key={index} label={item.name} value={item.id} />
               ))}
             </Radio.Group>
           )}
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
+        </ScrollArea>
+      </Accordion.Panel>
+    </Accordion.Item>
   );
 }

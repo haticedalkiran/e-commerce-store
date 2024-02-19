@@ -6,6 +6,7 @@ import "./App.css";
 
 import ReduxProvider from "./ReduxProvider";
 import Layout from "./Layout";
+
 export default function App() {
   return (
     <ReduxProvider>

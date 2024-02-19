@@ -1,12 +1,23 @@
-import { Box, Button, Card, Flex, Image, Rating, Text } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Image,
+  Rating,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { Product } from "../../interfaces/product";
 
 interface ProductCardProps {
-  product: any; //todo
+  product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const view = useSelector((state: any) => state.records.view);
+  const view = useSelector((state: RootState) => state.records.view);
 
   return (
     <Card
@@ -32,9 +43,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Card.Section>
 
       <Box flex={view === "list" ? "2" : "1"}>
-        <Text fw={500} lineClamp={2}>
-          <b> {product.brand.name}</b> {product.name}
-        </Text>
+        <Tooltip label={product.name}>
+          <Text fw={500} lineClamp={2}>
+            <b> {product.brand.name}</b> {product.name}
+          </Text>
+        </Tooltip>
+
         {product.ratingScore && (
           <Flex align={"center"}>
             <Rating

@@ -1,87 +1,71 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Accordion,
-  AccordionControl,
-  Checkbox,
-  Radio,
-  ScrollArea,
-} from "@mantine/core";
+import { Accordion, TextInput } from "@mantine/core";
 import { setFilters } from "../../store/records.state";
+import { FilterAccordion } from "./components";
+import { RootState } from "../../store/store";
+import { useState } from "react";
 
 export default function Filter() {
   const dispatch = useDispatch();
-  const { brandList, categoryList, priceRanges, rating, selectedFilters } =
-    useSelector((state: any) => state.records);
+  const [searchText, setSearchText] = useState("");
 
-  const filterChangeHandler = (value: any, name: string) => {
+  const { brandList, categoryList, priceRanges, rating, selectedFilters } =
+    useSelector((state: RootState) => state.records);
+
+  const filterChangeHandler = (value: string | string[], name: string) => {
     dispatch(setFilters({ [name]: value }));
   };
+
+  const handleSearchInput = (e: any) => {
+    setSearchText(e.target.value);
+    dispatch(setFilters({ searchText: e.target.value }));
+  };
+
   return (
-    <>
-      <Accordion
-        multiple
-        bg={"white"}
-        radius="md"
-        px={"md"}
-        defaultValue={["1", "2", "3", "4"]}
-      >
-        <Accordion.Item value="1">
-          <AccordionControl>brand</AccordionControl>
-          <Accordion.Panel>
-            <ScrollArea h={250}>
-              <Checkbox.Group
-                value={selectedFilters.brand}
-                onChange={(e) => filterChangeHandler(e, "brand")}
-              >
-                {brandList.map((item: any, index: string) => (
-                  <Checkbox key={index} label={item.name} value={item.id} />
-                ))}
-              </Checkbox.Group>
-            </ScrollArea>
-          </Accordion.Panel>
-        </Accordion.Item>
-        <Accordion.Item value="2">
-          <AccordionControl>category</AccordionControl>
-          <Accordion.Panel>
-            <ScrollArea h={250}>
-              <Checkbox.Group
-                value={selectedFilters.category}
-                onChange={(e) => filterChangeHandler(e, "category")}
-              >
-                {categoryList.map((item: any, index: string) => (
-                  <Checkbox key={index} label={item.name} value={item.id} />
-                ))}
-              </Checkbox.Group>
-            </ScrollArea>
-          </Accordion.Panel>
-        </Accordion.Item>
-        <Accordion.Item value="3">
-          <AccordionControl>price range</AccordionControl>
-          <Accordion.Panel>
-            <Radio.Group
-              value={selectedFilters.price}
-              onChange={(e) => filterChangeHandler(e, "price")}
-            >
-              {priceRanges.map((item: any, index: string) => (
-                <Radio value={item.id} key={index} label={item.name} />
-              ))}
-            </Radio.Group>
-          </Accordion.Panel>
-        </Accordion.Item>
-        <Accordion.Item value="4">
-          <AccordionControl>rating</AccordionControl>
-          <Accordion.Panel>
-            <Radio.Group
-              value={selectedFilters.rating}
-              onChange={(e) => filterChangeHandler(e, "rating")}
-            >
-              {rating.map((item: any, index: string) => (
-                <Radio value={item.id} key={index} label={item.name} />
-              ))}
-            </Radio.Group>
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion>
-    </>
+    <Accordion
+      bg={"white"}
+      multiple
+      defaultValue={["Search", "Category", "Brand", "Price Range", "Rating"]}
+    >
+      <Accordion.Item value={"Search"}>
+        <Accordion.Control>{"Search by keyword"}</Accordion.Control>
+        <Accordion.Panel>
+          <TextInput
+            placeholder="Search"
+            value={searchText}
+            onChange={handleSearchInput}
+          />
+        </Accordion.Panel>
+      </Accordion.Item>
+
+      <FilterAccordion
+        title="Brand"
+        items={brandList}
+        selectedValues={selectedFilters.brand}
+        onChangeCheckbox={(value) => filterChangeHandler(value, "brand")}
+        type="checkbox"
+      />
+      <FilterAccordion
+        title="Category"
+        items={categoryList}
+        selectedValues={selectedFilters.category}
+        onChangeCheckbox={(value) => filterChangeHandler(value, "category")}
+        type="checkbox"
+      />
+      <FilterAccordion
+        title="Price Range"
+        items={priceRanges}
+        selectedValues={selectedFilters.price}
+        onChangeRadio={(value) => filterChangeHandler(value, "price")}
+        type="radio"
+      />
+      <FilterAccordion
+        title="Rating"
+        items={rating}
+        selectedValues={selectedFilters.rating}
+        onChangeRadio={(value) => filterChangeHandler(value, "rating")}
+        type="radio"
+      />
+    </Accordion>
   );
 }

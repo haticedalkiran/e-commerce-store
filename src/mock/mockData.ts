@@ -7862,7 +7862,7 @@ export const mockData = [
     },
     tax: 20,
     ratingScore: {
-      averageRating: 4.655493895671476,
+      averageRating: 1,
       totalCount: 13515,
     },
     showSexualContent: true,
