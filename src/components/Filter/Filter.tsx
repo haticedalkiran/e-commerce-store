@@ -44,6 +44,7 @@ export default function Filter() {
         selectedValues={selectedFilters.brand}
         onChangeCheckbox={(value) => filterChangeHandler(value, "brand")}
         type="checkbox"
+        h={200}
       />
       <FilterAccordion
         title="Category"
@@ -51,6 +52,7 @@ export default function Filter() {
         selectedValues={selectedFilters.category}
         onChangeCheckbox={(value) => filterChangeHandler(value, "category")}
         type="checkbox"
+        h={200}
       />
       <FilterAccordion
         title="Price Range"

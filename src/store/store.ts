@@ -3,7 +3,6 @@ import { RecordsState } from "./records.state";
 
 export const store = configureStore({
   reducer: {
-    //filter: FilterState.reducer,
     records: RecordsState.reducer,
   },
 });

@@ -8,6 +8,7 @@ interface FilterAccordionProps {
   onChangeCheckbox?: (value: string[]) => void;
   onChangeRadio?: (value: string) => void;
   type: "checkbox" | "radio";
+  h?: number;
 }
 
 export default function FilterAccordion({
@@ -17,12 +18,13 @@ export default function FilterAccordion({
   onChangeCheckbox,
   onChangeRadio,
   type,
+  h,
 }: FilterAccordionProps) {
   return (
     <Accordion.Item value={title}>
       <Accordion.Control>{title}</Accordion.Control>
       <Accordion.Panel>
-        <ScrollArea h={200}>
+        <ScrollArea h={h || "unset"}>
           {type === "checkbox" ? (
             <Checkbox.Group
               value={Array.isArray(selectedValues) ? selectedValues : []}
