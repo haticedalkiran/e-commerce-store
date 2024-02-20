@@ -3,7 +3,9 @@
 ## Scripts
 
 `yarn dev`, starts development server
+
 `yarn build`, bundles project
+
 `yarn lint`, runs eslint
 
 In this project, products are shown on the homepage at launch, displaying the brand, name, rating, number of reviews and price to the user. product brands and categories listed on the filters tab. Additionally, there are filters for price range and rating. Users can perform searches by entering text as well.

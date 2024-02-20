@@ -16,7 +16,7 @@ export default function Layout() {
 
   useEffect(() => {
     dispatch(applyFilters());
-  }, [selectedFilters]);
+  }, [selectedFilters, dispatch]);
   return (
     <Container fluid>
       <SortHeader />

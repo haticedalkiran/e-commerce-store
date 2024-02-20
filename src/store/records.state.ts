@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { mockData } from "../mock/mockData";
 import { Product } from "../interfaces/product";
 import { RadioItem } from "../interfaces/radioItem";
+import { IdNamePair } from "../interfaces/idNamePair";
 
 interface RecordsState {
   products: Product[];
@@ -33,37 +34,37 @@ interface RecordsState {
 const initialState: RecordsState = {
   products: mockData as Product[],
   categoryList: mockData
-    .map((product: any) => {
+    .map((product) => {
       return {
         name: product.categoryName,
         id: product.categoryId.toString(),
       };
     })
-    .filter((category: any, index: number, self: any) => {
+    .filter((category: IdNamePair, index: number, self: IdNamePair[]) => {
       return (
         index ===
-        self.findIndex((t: any) => {
+        self.findIndex((t: IdNamePair) => {
           return t.id === category.id;
         })
       );
     })
-    .sort((a: any, b: any) => {
+    .sort((a: IdNamePair, b: IdNamePair) => {
       return a.name.localeCompare(b.name);
     }),
 
   brandList: mockData
-    .map((product: any) => {
+    .map((product) => {
       return { name: product.brand.name, id: product.brand.id.toString() };
     })
-    .filter((brand: any, index: number, self: any) => {
+    .filter((brand: IdNamePair, index: number, self: IdNamePair[]) => {
       return (
         index ===
-        self.findIndex((t: any) => {
+        self.findIndex((t: IdNamePair) => {
           return t.id === brand.id;
         })
       );
     })
-    .sort((a: any, b: any) => {
+    .sort((a: IdNamePair, b: IdNamePair) => {
       return a.name.localeCompare(b.name);
     }),
   priceRanges: [
@@ -110,63 +111,65 @@ export const RecordsState = createSlice({
     applyFilters: (state) => {
       const { brand, category, price, sort, searchText, rating } =
         state.selectedFilters;
-      let temp = initialState.products;
+      let temp: Product[] = initialState.products;
 
       if (rating !== "") {
-        initialState.rating.filter((rate: any) => {
+        initialState.rating.filter((rate: RadioItem) => {
           if (rate.id === rating) {
             //TODO: burada< rating/> yuvarlama yapıyor. filtre doğru ama uida yanlış anlaşılablir
-            temp = temp.filter((product: any) => {
+            temp = temp.filter((product) => {
               return product.ratingScore?.averageRating >= rate.min;
             });
           }
         });
       }
       if (sort !== "default") {
-        if (sort === "desc") {
-          temp = [...temp].sort((a: any, b: any) => {
+        if (sort === "asc") {
+          temp = [...temp].sort((a, b) => {
             return a.price.sellingPrice - b.price.sellingPrice;
           });
-        } else if (sort === "asc") {
-          temp = [...temp].sort((a: any, b: any) => {
+        } else if (sort === "desc") {
+          temp = [...temp].sort((a, b) => {
             return b.price.sellingPrice - a.price.sellingPrice;
           });
         } else if (sort === "review") {
-          temp = [...temp].sort((a: any, b: any) => {
+          temp = [...temp].sort((a, b) => {
             return b.ratingScore?.totalCount - a.ratingScore?.totalCount;
           });
         } else if (sort === "liked") {
-          temp = [...temp].sort((a: any, b: any) => {
+          temp = [...temp].sort((a, b) => {
             return b.ratingScore?.averageRating - a.ratingScore?.averageRating;
           });
         }
       }
+
       if (brand.length > 0) {
-        temp = temp.filter((product: any) => {
-          return brand.includes((product as any).brand.id.toString());
-        });
+        temp = temp.filter((product) =>
+          brand.includes(product.brand.id.toString())
+        );
       }
+
       if (category.length > 0) {
-        temp = temp.filter((product: any) => {
-          return state.selectedFilters.category.includes(
-            (product as any).categoryId.toString()
-          );
-        });
+        temp = temp.filter((product) =>
+          category.includes(product.categoryId.toString())
+        );
       }
+
       if (price !== "" && price !== undefined) {
-        initialState.priceRanges.filter((range: any) => {
+        initialState.priceRanges.filter((range: RadioItem) => {
           if (range.id === price) {
-            temp = temp.filter((product: any) => {
+            temp = temp.filter((product) => {
               return (
                 product.price.sellingPrice >= range.min &&
-                product.price.sellingPrice <= range.max
+                product.price.sellingPrice <= (range?.max ?? 0)
               );
             });
           }
         });
       }
+
       if (searchText !== "") {
-        temp = temp.filter((product: any) => {
+        temp = temp.filter((product) => {
           return (
             product.name.toLowerCase().includes(searchText.toLowerCase()) ||
             product.brand.name

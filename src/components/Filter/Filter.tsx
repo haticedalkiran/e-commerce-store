@@ -16,7 +16,7 @@ export default function Filter() {
     dispatch(setFilters({ [name]: value }));
   };
 
-  const handleSearchInput = (e: any) => {
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
     dispatch(setFilters({ searchText: e.target.value }));
   };

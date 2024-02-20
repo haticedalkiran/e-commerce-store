@@ -1,5 +1,5 @@
 import "@mantine/core/styles.css";
-import { Flex, Grid, Group, MantineProvider } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { theme } from "./theme";
 
 import "./App.css";
