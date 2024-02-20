@@ -2,7 +2,7 @@ import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { theme } from "./theme";
 
-import "./App.css";
+import "./app.css";
 
 import ReduxProvider from "./ReduxProvider";
 import Layout from "./Layout";
